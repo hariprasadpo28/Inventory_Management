@@ -2,8 +2,8 @@ package Models
 
 import (
 	"Inventory_Management/Config"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
-	"time"
 )
 
 func GetProducts(products *[]Product) (err error) {
@@ -36,33 +36,19 @@ func UpdateProduct(product *Product, id string) (err error) {
 func PlaceOrder(order *Order) (err error) {
 	//var user User
 	var prod Product
-	//var prevOrder Order
-	//Config.DB.Where( "user_name = ?", order.UserName).Last(&prevOrder)
-	////if err = Config.DB.Where("user_name = ?", order.UserName).First(&user).Error; err != nil {
-	////	return err
-	////}
-	//fmt.Println(prevOrder)
-
 
 	if err := Config.DB.Create(order).Error; err != nil {
 		return err
 	}
-
-
-	//if diff < 5 {
-	//	err := fmt.Errorf("please try after {%d} Minutes", diff)
-	//	return err
-	//}
-
+	fmt.Println(order)
+	Config.DB.Where("unique_id = ?", order.ProductId).First(&prod)
+	fmt.Println(prod)
 	if err = Config.DB.Where("unique_id = ?", order.ProductId).First(&prod).Error; err != nil {
 		return err
 	}
-
-	//user.Orders = append(user.Orders, *order)
-	//defer Config.DB.Model(user).Update("Orders", user.Orders)
-
+	fmt.Println(prod)
 	if prod.Quantity < order.Quantity {
-		Config.DB.Model(order).Updates(Order{Status: "Failed (Product is not available)", TotalAmount: prod.Price * float32(order.Quantity), OrderTime: time.Now()})
+		Config.DB.Model(order).Updates(Order{Status: "Failed (Product is not available)", TotalAmount: prod.Price * float32(order.Quantity)})
 		return nil
 	}
 	Config.DB.Model(prod).Update("Quantity", prod.Quantity-order.Quantity)
