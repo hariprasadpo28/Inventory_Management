@@ -7,7 +7,7 @@ GET   '/api/products'       : Get all products
 POST  '/api/product'        : Post new product
       JSON data:
       {
-          "unique_id": ,      // all are required fields
+          "unique_id": ,     
           "quantity": 7,      
           "price": 0,
           "description": "",
@@ -32,7 +32,7 @@ POST  'api/user'              : create new user
       JSON DATA:
       {
         "name": "",
-        "user_name": "",        // should be unique 
+        "user_name": "",        
         "email": "example@gmail.com"
       }
        
