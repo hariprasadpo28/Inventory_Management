@@ -1,9 +1,5 @@
 package Models
 
-import (
-	"time"
-)
-
 type Product struct {
 	Id          int     `json:"id"`
 	UniqueId    string  `json:"unique_id"`
@@ -28,7 +24,7 @@ type Order struct {
 	TotalAmount float32 `json:"total_amount"`
 	UserName    string  `json:"user_name"`
 	Status      string  `json:"status"`
-	OrderTime time.Time `json:"order_time" sql:"DEFAULT:CURRENT_TIMESTAMP"`
+	//OrderTime time.Time `json:"order_time" gorm:"default: null"`
 }
 
 func (b *User) TableName() string {

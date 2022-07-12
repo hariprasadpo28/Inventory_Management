@@ -2,7 +2,6 @@ package Models
 
 import (
 	"Inventory_Management/Config"
-	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"time"
 )
@@ -37,16 +36,15 @@ func UpdateProduct(product *Product, id string) (err error) {
 func PlaceOrder(order *Order) (err error) {
 	//var user User
 	var prod Product
-	var prevOrder Order
-	Config.DB.Where( "user_name = ?", order.UserName).Last(&prevOrder)
-	//if err = Config.DB.Where("user_name = ?", order.UserName).First(&user).Error; err != nil {
-	//	return err
-	//}
-	fmt.Println(prevOrder)
+	//var prevOrder Order
+	//Config.DB.Where( "user_name = ?", order.UserName).Last(&prevOrder)
+	////if err = Config.DB.Where("user_name = ?", order.UserName).First(&user).Error; err != nil {
+	////	return err
+	////}
+	//fmt.Println(prevOrder)
 
 
 	if err := Config.DB.Create(order).Error; err != nil {
-
 		return err
 	}
 

@@ -11,12 +11,14 @@ import (
 func AddProduct(c *gin.Context) {
 	var product Models.Product
 	if err := c.ShouldBindJSON(&product); err != nil {
-		//fmt.Println(err)
-		c.AbortWithStatus(http.StatusNotFound)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Please add valid product details"})
+		return
+		//c.AbortWithStatus(http.StatusNotFound)
 	} else {
 		if err := Models.AddProduct(&product); err != nil {
-			//fmt.Println(err)
-			c.AbortWithStatus(http.StatusNotFound)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err})
+			return
+			//c.AbortWithStatus(http.StatusNotFound)
 		} else {
 			c.JSON(http.StatusOK, product)
 		}
@@ -29,12 +31,14 @@ func UpdateProduct(c *gin.Context) {
 	uid := c.Params.ByName("uid")
 	err := Models.GetProductByID(&product, uid)
 	if err != nil {
-		c.JSON(http.StatusNotFound, product)
-		c.AbortWithStatus(http.StatusNotFound)
+		c.JSON(http.StatusNotFound, gin.H{"error": "Product not found!"})
+		return
+		//c.AbortWithStatus(http.StatusNotFound)
 	}
 	c.BindJSON(&product)
 	err = Models.UpdateProduct(&product, uid)
 	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err})
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
 		c.JSON(http.StatusOK, product)
@@ -102,12 +106,10 @@ func GetUserOrders(c *gin.Context){
 	username := c.Params.ByName("username")
 	err := Models.GetUserOrders(&orders, username)
 	if err != nil{
-		fmt.Println(err)
+		//fmt.Println(err)
 		c.JSON(http.StatusNotFound, gin.H{"message": "User not found"})
 		c.AbortWithStatus(http.StatusNotFound)
 	} else{
-		fmt.Println(orders[0].UserName)
-		fmt.Println(username)
 		c.JSON(http.StatusOK, orders)
 	}
 }
