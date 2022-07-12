@@ -10,11 +10,11 @@ type Product struct {
 }
 
 type User struct {
-	Id       int     `json:"id"`
-	Name     string  `json:"name" binding:"required"`
-	UserName string  `json:"user_name" binding:"required"`
-	Email    string  `json:"email" binding:"required"`
-	Orders   []Order `json:"orders"`
+	Id       int    `json:"id"`
+	Name     string `json:"name" binding:"required"`
+	UserName string `json:"user_name" binding:"required" gorm:"unique"`
+	Email    string `json:"email" binding:"required"`
+	//Orders   []Order `json:"orders"`
 }
 
 type Order struct {
@@ -22,7 +22,7 @@ type Order struct {
 	ProductId   string  `json:"product_id" binding:"required"`
 	Quantity    int     `json:"quantity" binding:"required"`
 	TotalAmount float32 `json:"total_amount"`
-	UserId      User    `json:"user_id"`
+	UserName    string  `json:"user_name"`
 	Status      string  `json:"status"`
 }
 
