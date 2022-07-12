@@ -1,12 +1,12 @@
 package Models
 
 type Product struct {
-	Id          int     `json:"id"`
-	UniqueId    string  `json:"unique_id"`
-	Name        string  `json:"name"`
-	Price       float32 `json:"price"`
-	Quantity    int     `json:"quantity"`
-	Description string  `json:"description"`
+	Id          int     `json:"id" binding:"required"`
+	UniqueId    string  `json:"unique_id" binding:"required"`
+	Name        string  `json:"name" binding:"required"`
+	Price       float32 `json:"price" binding:"required"`
+	Quantity    int     `json:"quantity" binding:"required"`
+	Description string  `json:"description" binding:"required"`
 }
 
 type User struct {
