@@ -15,6 +15,7 @@ type Retailer struct {
 	RetailerID string `json:"retailer_id" gorm:"unique"`
 	Name       string `json:"name" binding:"required"`
 	UserName   string `json:"user_name" binding:"required" gorm:"unique"`
+	Password   string `json:"password" binding:"required"`
 }
 
 type User struct {
@@ -22,6 +23,7 @@ type User struct {
 	Name     string `json:"name" binding:"required"`
 	UserName string `json:"user_name" binding:"required" gorm:"unique"`
 	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
 	//Orders   []Order `json:"orders"`
 }
 

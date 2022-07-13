@@ -7,8 +7,48 @@ import (
 	"time"
 )
 
+//AuthUser - Authenticates the user/customer
+func AuthUser(username string, password string) error{
+	var user User
+	if err:= Config.DB.Where("user_name = ?", username).Find(&user).Error; err != nil{
+		return fmt.Errorf("user not found")
+	}
+	if password == user.Password{
+		return nil
+	} else {
+		return fmt.Errorf("password is incorrect")
+	}
+}
+
+//AuthRetailer - Authenticates the retailer
+func AuthRetailer(username string, password string) error{
+	var retailer Retailer
+	if err:= Config.DB.Where("user_name = ?", username).Find(&retailer).Error; err != nil{
+		return fmt.Errorf("user not found")
+	}
+	if password == retailer.Password{
+		return nil
+	} else {
+		return fmt.Errorf("password is incorrect")
+	}
+}
+
+//AuthProductRetailer - Checks if the product the retailer trying to update is added by him or not
+func AuthProductRetailer(product *Product, uid string, username string) error {
+	var retailer Retailer
+	Config.DB.Where("user_name = ?", username).Find(&retailer)
+	if err := Config.DB.Where("unique_id = ?", uid).Find(product).Error; err != nil{
+		return fmt.Errorf("product not found")
+	}
+	if retailer.RetailerID != product.RetailerID {
+		return fmt.Errorf("you cannot update this product")
+	}
+	return nil
+}
+
+//GetProducts - get all available products from the database
 func GetProducts(products *[]Product) (err error) {
-	if err := Config.DB.Find(products).Error; err != nil {
+	if err := Config.DB.Where("quantity > ?", "0").Find(products).Error; err != nil {
 		return err
 	}
 	return nil
@@ -34,12 +74,12 @@ func UpdateProduct(product *Product, id string) (err error) {
 	return nil
 }
 
-func PlaceOrder(order *Order) (err error) {
+func PlaceOrder(order *Order, username string) (err error) {
 	//var user User
 	var prod Product
 	var prevOrder Order
 
-	Config.DB.Where("user_name = ?", order.UserName).Last(&prevOrder)
+	Config.DB.Where("user_name = ?", username).Last(&prevOrder)
 
 	if prevOrder.Id != 0{
 		currentTime := time.Now().Unix()
@@ -58,11 +98,11 @@ func PlaceOrder(order *Order) (err error) {
 		return err
 	}
 	if prod.Quantity < order.Quantity {
-		Config.DB.Model(order).Updates(Order{Status: "Failed", TotalAmount: prod.Price * float32(order.Quantity), OrderTime: time.Now().Unix(), RetailerID: prod.RetailerID})
+		Config.DB.Model(order).Updates(Order{Status: "Failed", TotalAmount: prod.Price * float32(order.Quantity), OrderTime: time.Now().Unix(), RetailerID: prod.RetailerID, UserName: username})
 		return fmt.Errorf("out of stock")
 	}
 	Config.DB.Model(prod).Update("Quantity", prod.Quantity-order.Quantity)
-	Config.DB.Model(order).Update(Order{Status: "Placed", TotalAmount: prod.Price * float32(order.Quantity), OrderTime: time.Now().Unix(),RetailerID: prod.RetailerID})
+	Config.DB.Model(order).Update(Order{Status: "Placed", TotalAmount: prod.Price * float32(order.Quantity), OrderTime: time.Now().Unix(),RetailerID: prod.RetailerID, UserName: username})
 
 	return nil
 

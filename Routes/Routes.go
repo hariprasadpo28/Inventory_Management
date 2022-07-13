@@ -16,7 +16,7 @@ func SetupRouter() *gin.Engine {
 	grp2 := r.Group("/order")
 	{
 		grp2.POST("/", Controller.PlaceOrder)
-		grp2.GET("/:username", Controller.GetUserOrders)
+		grp2.GET("/", Controller.GetUserOrders)
 	}
 	grp3 := r.Group("/user")
 	{
