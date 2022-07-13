@@ -7,22 +7,26 @@ import (
 
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
-	grp1 := r.Group("/api")
+	grp1 := r.Group("/product")
 	{
-		grp1.GET("product", Controller.GetProducts)
-		grp1.POST("product", Controller.AddProduct)
-		grp1.POST("product/:uid", Controller.UpdateProduct)
-
-		grp1.POST("order/", Controller.PlaceOrder)
-		grp1.GET("order/:username", Controller.GetUserOrders)
-		grp1.GET("orders", Controller.GetAllOrders)
-
-		grp1.POST("user", Controller.CreateUser)
-		grp1.GET("user", Controller.GetAllUsers)
-
-		//grp1.PUT("student/:id", Controller.UpdateUser)
-		//grp1.DELETE("student/:id", Controller.DeleteUser)
-		//grp1.PATCH("student/:id", Controller.PatchUser)
+		grp1.GET("", Controller.GetProducts)
+		grp1.POST("", Controller.AddProduct)
+		grp1.POST("/:uid", Controller.UpdateProduct)
+	}
+	grp2 := r.Group("/order")
+	{
+		grp2.POST("/", Controller.PlaceOrder)
+		grp2.GET("/:username", Controller.GetUserOrders)
+	}
+	grp3 := r.Group("/user")
+	{
+		grp3.POST("", Controller.CreateUser)
+		grp3.GET("", Controller.GetAllUsers)
+	}
+	grp4 := r.Group("/retailer")
+	{
+		grp4.POST("", Controller.CreateRetailer)
+		grp4.GET("/orders/:retailerid", Controller.GetRetailerOrders)
 	}
 
 	return r

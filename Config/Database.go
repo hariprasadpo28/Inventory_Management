@@ -22,7 +22,7 @@ func BuildDBConfig() *DBConfig {
 		Port:     3306,
 		User:     "root",
 		Password: "X4089666@cbse",
-		DBName:   "inventory_management_db",
+		DBName:   "inventory_management",
 	}
 	return &dbConfig
 }

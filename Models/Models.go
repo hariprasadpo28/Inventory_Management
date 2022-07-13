@@ -2,18 +2,19 @@ package Models
 
 type Product struct {
 	Id          int     `json:"id"`
-	UniqueId    string  `json:"unique_id" binding:"required"`
+	UniqueId    string  `json:"unique_id" binding:"required" gorm:"unique"`
 	Name        string  `json:"name" binding:"required"`
 	Price       float32 `json:"price" binding:"required"`
 	Quantity    int     `json:"quantity" binding:"required"`
 	Description string  `json:"description" binding:"required"`
-	RetailerID	string	`json:"retailer_id" binding:"required"`
+	RetailerID  string  `json:"retailer_id" binding:"required"`
 }
 
 type Retailer struct {
 	Id         int    `json:"id"`
-	RetailerID string `json:"retailer_id" binding:"unique"`
-	Name       string `json:"name"`
+	RetailerID string `json:"retailer_id" gorm:"unique"`
+	Name       string `json:"name" binding:"required"`
+	UserName   string `json:"user_name" binding:"required" gorm:"unique"`
 }
 
 type User struct {
@@ -45,4 +46,8 @@ func (b *Product) TableName() string {
 
 func (b *Order) TableName() string {
 	return "order"
+}
+
+func (b *Retailer) TableName() string {
+	return "retailer"
 }

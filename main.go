@@ -19,6 +19,7 @@ func main() {
 	Config.DB.AutoMigrate(&Models.User{})
 	Config.DB.AutoMigrate(&Models.Order{})
 	Config.DB.AutoMigrate(&Models.Product{})
+	Config.DB.AutoMigrate(&Models.Retailer{})
 	r := Routes.SetupRouter()
 	//running
 	r.Run(":8090")

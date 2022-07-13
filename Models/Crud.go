@@ -89,8 +89,16 @@ func GetUserOrders(orders *[]Order, username string) (err error) {
 	return nil
 }
 
-func GetAllOrders(order *[]Order) (err error) {
-	if err := Config.DB.Find(&order).Error; err != nil {
+func CreateRetailer(user *Retailer) (err error) {
+	if err := Config.DB.Create(user).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetRetailerOrders(order *[]Order, id string) (err error) {
+
+	if err := Config.DB.Where( "retailer_id = ?", id).Find(&order).Error; err != nil {
 		return err
 	}
 	return nil
