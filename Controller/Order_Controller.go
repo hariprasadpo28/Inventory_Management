@@ -140,8 +140,8 @@ func GetRetailerOrders(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error":err.Error()})
 		return
 	}
-
-	retailerid := c.Params.ByName("retailerid")
+	retailerid := Models.GetRetailerID(username)
+	//retailerid := c.Params.ByName("retailerid")
 	err = Models.GetRetailerOrders(&orders, retailerid)
 	if err != nil {
 		fmt.Println(err)

@@ -143,3 +143,9 @@ func GetRetailerOrders(order *[]Order, id string) (err error) {
 	}
 	return nil
 }
+
+func GetRetailerID(username string) string{
+	var retailer Retailer
+	Config.DB.Where("user_name = ?", username).Find(&retailer)
+	return retailer.RetailerID
+}

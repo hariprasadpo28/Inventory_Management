@@ -26,7 +26,7 @@ func SetupRouter() *gin.Engine {
 	grp4 := r.Group("/retailer")
 	{
 		grp4.POST("", Controller.CreateRetailer)
-		grp4.GET("/orders/:retailerid", Controller.GetRetailerOrders)
+		grp4.GET("/orders/", Controller.GetRetailerOrders)
 	}
 
 	return r
