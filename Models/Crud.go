@@ -58,8 +58,8 @@ func PlaceOrder(order *Order) (err error) {
 		return err
 	}
 	if prod.Quantity < order.Quantity {
-		Config.DB.Model(order).Updates(Order{Status: "Failed (Out of stock)", TotalAmount: prod.Price * float32(order.Quantity), OrderTime: time.Now().Unix(), RetailerID: prod.RetailerID})
-		return nil
+		Config.DB.Model(order).Updates(Order{Status: "Failed", TotalAmount: prod.Price * float32(order.Quantity), OrderTime: time.Now().Unix(), RetailerID: prod.RetailerID})
+		return fmt.Errorf("out of stock")
 	}
 	Config.DB.Model(prod).Update("Quantity", prod.Quantity-order.Quantity)
 	Config.DB.Model(order).Update(Order{Status: "Placed", TotalAmount: prod.Price * float32(order.Quantity), OrderTime: time.Now().Unix(),RetailerID: prod.RetailerID})
