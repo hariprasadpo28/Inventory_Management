@@ -49,11 +49,15 @@ func UpdateProduct(c *gin.Context) {
 func PlaceOrder(c *gin.Context) {
 	var order Models.Order
 	c.BindJSON(&order)
+	//c.Request.Header
+	//c.Request.Context()
+	//c.GetHeader("username")
 
 	err := Models.PlaceOrder(&order)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": err})
-		c.AbortWithStatus(http.StatusNotFound)
+		//fmt.Println(err)
+		c.JSON(http.StatusNotFound, gin.H{"Error": err.Error()})
+		//c.AbortWithStatus(http.StatusNotFound)
 	} else {
 		c.JSON(http.StatusOK, order)
 	}
@@ -101,28 +105,27 @@ func GetAllUsers(c *gin.Context) {
 }
 
 // GetUserOrders - Get all orders of the user (username need to be taken from the logged in user; will do that after implementing the authentication part)
-func GetUserOrders(c *gin.Context){
+func GetUserOrders(c *gin.Context) {
 	var orders []Models.Order
 	username := c.Params.ByName("username")
 	err := Models.GetUserOrders(&orders, username)
-	if err != nil{
+	if err != nil {
 		//fmt.Println(err)
 		c.JSON(http.StatusNotFound, gin.H{"message": "User not found"})
 		c.AbortWithStatus(http.StatusNotFound)
-	} else{
+	} else {
 		c.JSON(http.StatusOK, orders)
 	}
 }
 
 //GetAllOrders - Get all orders placed
-func GetAllOrders(c *gin.Context){
+func GetAllOrders(c *gin.Context) {
 	var orders []Models.Order
 	err := Models.GetAllOrders(&orders)
-	if err != nil{
+	if err != nil {
 		fmt.Println(err)
 		c.AbortWithStatus(http.StatusNotFound)
-	} else{
+	} else {
 		c.JSON(http.StatusOK, orders)
 	}
 }
-

@@ -4,6 +4,7 @@ import (
 	"Inventory_Management/Config"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"time"
 )
 
 func GetProducts(products *[]Product) (err error) {
@@ -36,23 +37,32 @@ func UpdateProduct(product *Product, id string) (err error) {
 func PlaceOrder(order *Order) (err error) {
 	//var user User
 	var prod Product
+	var prevOrder Order
+
+	Config.DB.Where("user_name = ?", order.UserName).Last(&prevOrder)
+
+	if prevOrder.Id != 0{
+		currentTime := time.Now().Unix()
+		if (currentTime - prevOrder.OrderTime) < 300 {
+			err := fmt.Errorf("please try again after %d minutes", 5 - (currentTime - prevOrder.OrderTime)/60)
+			//fmt.Println(err)
+			return err
+		}
+	}
 
 	if err := Config.DB.Create(order).Error; err != nil {
 		return err
 	}
-	fmt.Println(order)
-	Config.DB.Where("unique_id = ?", order.ProductId).First(&prod)
-	fmt.Println(prod)
+	//fmt.Println(order)
 	if err = Config.DB.Where("unique_id = ?", order.ProductId).First(&prod).Error; err != nil {
 		return err
 	}
-	fmt.Println(prod)
 	if prod.Quantity < order.Quantity {
-		Config.DB.Model(order).Updates(Order{Status: "Failed (Product is not available)", TotalAmount: prod.Price * float32(order.Quantity)})
+		Config.DB.Model(order).Updates(Order{Status: "Failed (Out of stock)", TotalAmount: prod.Price * float32(order.Quantity), OrderTime: time.Now().Unix(), RetailerID: prod.RetailerID})
 		return nil
 	}
 	Config.DB.Model(prod).Update("Quantity", prod.Quantity-order.Quantity)
-	Config.DB.Model(order).Update(Order{Status: "Placed", TotalAmount: prod.Price * float32(order.Quantity)})
+	Config.DB.Model(order).Update(Order{Status: "Placed", TotalAmount: prod.Price * float32(order.Quantity), OrderTime: time.Now().Unix(),RetailerID: prod.RetailerID})
 
 	return nil
 
@@ -72,15 +82,15 @@ func GetAllUsers(users *[]User) (err error) {
 	return nil
 }
 
-func GetUserOrders(orders *[]Order, username string) (err error){
-	if err := Config.DB.Find(&orders,"user_name = ?", username).Error; err != nil{
+func GetUserOrders(orders *[]Order, username string) (err error) {
+	if err := Config.DB.Find(&orders, "user_name = ?", username).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func GetAllOrders (order *[]Order) (err error){
-	if err := Config.DB.Find(&order).Error; err != nil{
+func GetAllOrders(order *[]Order) (err error) {
+	if err := Config.DB.Find(&order).Error; err != nil {
 		return err
 	}
 	return nil
